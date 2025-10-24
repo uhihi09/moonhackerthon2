@@ -15,61 +15,71 @@ const RecentRoute = () => {
     fetchLocationHistory();
   }, []);
 
-  const fetchLocationHistory = async () => {
-    setLoading(true);
+const fetchLocationHistory = async () => {
+  setLoading(true);
+  
+  try {
+    // ✅ 실제 API 호출
+    const response = await locationAPI.getHistory(10); // 최근 10개
     
-    // Mock 데이터 사용 (API 없이 바로 표시)
-    const mockData = [
-      {
-        id: 1,
-        coordinates: '35.0497094, 127.9929478',
-        timestamp: '2024-10-25T13:03:00'
-      },
-      {
-        id: 2,
-        coordinates: '37.0324096, 127.9953599',
-        timestamp: '2024-10-25T13:18:00'
-      },
-      {
-        id: 3,
-        coordinates: '39.0421594, 127.3525478',
-        timestamp: '2024-10-25T13:33:00'
-      },
-      {
-        id: 4,
-        coordinates: '38.0532551, 127.5325432',
-        timestamp: '2024-10-25T13:48:00'
-      },
-      {
-        id: 5,
-        coordinates: '37.4235553, 127.9924478',
-        timestamp: '2024-10-25T14:03:00'
-      }
-    ];
-
-    // 로딩 효과를 위한 짧은 딜레이
-    setTimeout(() => {
-      setLocationHistory(mockData);
-      setLoading(false);
-    }, 300);
-
-    /* API 연동 시 아래 코드 사용
-    try {
-      const response = await locationAPI.getRecentLocations(1);
+    console.log('✅ 위치 히스토리 응답:', response.data);
+    
+    // 응답 데이터 파싱
+    const responseData = response.data.data || response.data;
+    
+    if (responseData && Array.isArray(responseData)) {
+      // 서버 응답을 화면에 맞게 변환
+      const formattedData = responseData.map((item, index) => ({
+        id: item.id || index + 1,
+        coordinates: `${item.latitude}, ${item.longitude}`,
+        timestamp: item.recordedAt || item.createdAt || item.timestamp
+      }));
       
-      if (response.data && response.data.locations) {
-        setLocationHistory(response.data.locations);
-      } else {
-        setLocationHistory(mockData);
-      }
-    } catch (error) {
-      console.error('이동경로 로드 실패:', error);
-      setLocationHistory(mockData);
-    } finally {
-      setLoading(false);
+      setLocationHistory(formattedData);
+      console.log('✅ 변환된 데이터:', formattedData);
+    } else {
+      console.warn('⚠️ 위치 데이터가 없습니다. 더미 데이터 사용.');
+      setLocationHistory(getMockData());
     }
-    */
-  };
+  } catch (error) {
+    console.error('❌ 위치 히스토리 로드 실패:', error);
+    console.error('❌ 에러 상세:', error.response?.data);
+    
+    // 에러 시 더미 데이터 사용
+    setLocationHistory(getMockData());
+  } finally {
+    setLoading(false);
+  }
+};
+
+// 더미 데이터를 별도 함수로 분리
+const getMockData = () => [
+  {
+    id: 1,
+    coordinates: '35.0497094, 127.9929478',
+    timestamp: '2024-10-25T13:03:00'
+  },
+  {
+    id: 2,
+    coordinates: '37.0324096, 127.9953599',
+    timestamp: '2024-10-25T13:18:00'
+  },
+  {
+    id: 3,
+    coordinates: '39.0421594, 127.3525478',
+    timestamp: '2024-10-25T13:33:00'
+  },
+  {
+    id: 4,
+    coordinates: '38.0532551, 127.5325432',
+    timestamp: '2024-10-25T13:48:00'
+  },
+  {
+    id: 5,
+    coordinates: '37.4235553, 127.9924478',
+    timestamp: '2024-10-25T14:03:00'
+  }
+];
 
   const formatTime = (timestamp) => {
     try {

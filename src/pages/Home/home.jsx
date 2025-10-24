@@ -37,9 +37,27 @@ const Home = () => {
   };
 
   const handleLocationHistoryClick = () => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+  try {
+    const userStr = localStorage.getItem('user');
+    
+    // undefined, null, "undefined" 체크
+    if (!userStr || userStr === 'undefined' || userStr === 'null') {
+      console.warn('사용자 정보가 없습니다. 로그인이 필요합니다.');
+      navigate('/login');
+      return;
+    }
+    
+    const user = JSON.parse(userStr);
     const userId = user.id || user._id || 'default';
+    
+    console.log('사용자 ID:', userId);
     navigate(`/recent-route/${userId}`);
+    } catch (error) {
+      console.error('사용자 정보 파싱 실패:', error);
+      alert('로그인 정보가 올바르지 않습니다. 다시 로그인해주세요.');
+      localStorage.clear();
+      navigate('/login');
+    }
   };
 
   const handleEmergencyRecordClick = (recordId) => {
