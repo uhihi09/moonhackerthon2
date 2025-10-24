@@ -45,7 +45,7 @@ const Login = ({ setAuth }) => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="logo-large">
-          <span className="logo-text-large">땡!</span>
+          <span className="logo-text-large">핑!</span>
         </div>
         <h1 className="auth-title">로그인</h1>
         <p className="auth-subtitle">AI 기반 SOS 구조 요청 서비스</p>
