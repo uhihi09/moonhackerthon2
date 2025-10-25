@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import KakaoMap from '../../components/KakaoMap';
 import { emergencyAPI } from '../../services/api';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -131,21 +132,28 @@ const EmerDetail = () => {
 
         {/* 지도 영역 */}
         <MapCard>
-          <MapContainer>
-            <MapPlaceholder>
-              <EmergencyPin>
-                <PinDot />
-                <PinLabel>버튼 사용 위치</PinLabel>
-              </EmergencyPin>
-            </MapPlaceholder>
-          </MapContainer>
-        </MapCard>
+  {/* ✅ Kakao Map 적용 */}
+  <KakaoMap
+    latitude={emergencyDetail.location.latitude}
+    longitude={emergencyDetail.location.longitude}
+    level={3}
+    markers={[
+      {
+        lat: emergencyDetail.location.latitude,
+        lng: emergencyDetail.location.longitude,
+        title: '위급버튼 사용 위치'
+      }
+    ]}
+    markerColor="red"
+    height="400px"
+  />
+</MapCard>
 
         {/* 상세 정보 카드 */}
         <DetailCard>
           <DetailRow>
             <DetailLabel>시각</DetailLabel>
-            <DetailValue>{formatDateTime(emergencyDetail.timestamp)}</DetailValue>
+            <DetailValue>{formatDateTime(new Date(Date.now()))}</DetailValue>
           </DetailRow>
 
           <Divider />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import KakaoMap from '../../components/KakaoMap';
 import { locationAPI } from '../../services/api';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -136,27 +137,26 @@ const getMockData = () => [
         </PageHeader>
         {/* 지도 영역 */}
         <MapCard>
-          <MapContainer>
-            <MapPlaceholder>
-              <RoutePathSVG>
-                <svg width="100%" height="100%" viewBox="0 0 300 250" preserveAspectRatio="none">
-                  {/* 경로 라인 */}
-                  <path
-                    d="M 50,50 L 120,80 L 180,140 L 220,180 L 250,210"
-                    stroke="#FF3B30"
-                    strokeWidth="4"
-                    fill="none"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </RoutePathSVG>
-              <EndLocationPin>
-                <PinDot />
-                <PinLabel>최신 위치</PinLabel>
-              </EndLocationPin>
-            </MapPlaceholder>
-          </MapContainer>
-        </MapCard>
+  {/* ✅ Kakao Map으로 교체 - 경로선 표시 */}
+    <KakaoMap
+    latitude={locationHistory[0]?.latitude || 35.0497094}
+    longitude={locationHistory[0]?.longitude || 127.9929478}
+    level={5}
+    height="300px"
+    showCurrentLocation={false}
+    polyline={locationHistory.map(loc => ({
+      latitude: loc.latitude || parseFloat(loc.coordinates.split(',')[0]),
+      longitude: loc.longitude || parseFloat(loc.coordinates.split(',')[1])
+    }))}
+    markers={locationHistory.map((loc, index) => ({
+      latitude: loc.latitude || parseFloat(loc.coordinates.split(',')[0]),
+      longitude: loc.longitude || parseFloat(loc.coordinates.split(',')[1]),
+      title: `${index + 1}. ${formatTime(loc.timestamp)}`,
+      onClick: (data) => console.log('마커 클릭:', data)
+    }))}
+    onMapLoad={(map) => console.log('경로 지도 로드:', map)}
+  />
+</MapCard>
 
         {/* 좌표 테이블 */}
         <TableCard>
@@ -341,48 +341,48 @@ const MapContainer = styled.div`
   justify-content: center;
 `;
 
-const MapPlaceholder = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-`;
+// const MapPlaceholder = styled.div`
+//   position: relative;
+//   width: 100%;
+//   height: 100%;
+// `;
 
-const RoutePathSVG = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
+// const RoutePathSVG = styled.div`
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+// `;
 
-const EndLocationPin = styled.div`
-  position: absolute;
-  bottom: 40px;
-  right: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+// const EndLocationPin = styled.div`
+//   position: absolute;
+//   bottom: 40px;
+//   right: 60px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// `;
 
-const PinDot = styled.div`
-  width: 16px;
-  height: 16px;
-  background-color: #FF3B30;
-  border: 3px solid white;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-`;
+// const PinDot = styled.div`
+//   width: 16px;
+//   height: 16px;
+//   background-color: #FF3B30;
+//   border: 3px solid white;
+//   border-radius: 50%;
+//   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+// `;
 
-const PinLabel = styled.div`
-  background: rgba(0, 0, 0, 0.75);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 13px;
-  margin-top: 8px;
-  white-space: nowrap;
-  font-weight: 500;
-`;
+// const PinLabel = styled.div`
+//   background: rgba(0, 0, 0, 0.75);
+//   color: white;
+//   padding: 6px 12px;
+//   border-radius: 12px;
+//   font-size: 13px;
+//   margin-top: 8px;
+//   white-space: nowrap;
+//   font-weight: 500;
+// `;
 
 const TableCard = styled.div`
   background: white;

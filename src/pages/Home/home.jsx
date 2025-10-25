@@ -1,14 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import KakaoMap from '../../components/KakaoMap';
 import { locationAPI, emergencyAPI } from '../../services/api';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
+const dummyEmergencyRecords = [
+  {
+    id: 1,
+    timestamp: new Date(Date.now()),
+    location: '인재니움 사천',
+    status: 'resolved'
+  },
+  {
+    id: 2,
+    timestamp: new Date('2025-10-24T10:02:00'),
+    location: '인재니움 사천',
+    status: 'pending'
+  },
+  {
+    id: 3,
+    timestamp: new Date('2025-10-24T10:01:00'),
+    location: '인재니움 사천',
+    status: 'resolved'
+  },
+  {
+    id: 4,
+    timestamp: new Date('2025-10-24T10:00:00'),
+    location: '인재니움 사천',
+    status: 'resolved'
+  },
+  {
+    id: 5,
+    timestamp: new Date('2025-10-24T09:59:00'),
+    location: '인재니움 사천',
+    status: 'resolved'
+  }
+];
+
 const Home = () => {
   const navigate = useNavigate();
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [emergencyButtonRecords, setEmergencyButtonRecords] = useState([]);
+  const [emergencyButtonRecords, setEmergencyButtonRecords] = useState(dummyEmergencyRecords);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -107,32 +141,39 @@ const Home = () => {
 
       <Content>
         {/* 지도 + 최근 이동경로 통합 카드 */}
-        <MapLocationCard>
-          <MapContainer>
-            <MapPlaceholder>
-              <LocationPin>📍</LocationPin>
-              <LocationLabel>배준하 님</LocationLabel>
-            </MapPlaceholder>
-          </MapContainer>
-          <MapInfo>
-            <LocationText>
-              {currentLocation?.address || '경상남도 사천시 광포길'}
-            </LocationText>
-            <TimeText>
-              {currentLocation?.timestamp 
-                ? format(new Date(currentLocation.timestamp), 'MM.dd. HH:mm 기준', { locale: ko })
-                : '10.24. 14:52 기준'}
-            </TimeText>
-          </MapInfo>
-          <Divider />
-          <LocationHistoryButton onClick={handleLocationHistoryClick}>
-            <RouteIconWrapper>
-              <img src="/./src/assets/route.png" alt="경로" />
-            </RouteIconWrapper>
-            <ButtonText>최근 이동경로 확인하기</ButtonText>
-            <ArrowIcon>›</ArrowIcon>
-          </LocationHistoryButton>
-        </MapLocationCard>
+        {/* 지도 + 최근 이동경로 통합 카드 */}
+<MapLocationCard>
+  {/* ✅ Kakao Map으로 교체 */}
+  <KakaoMap
+    latitude={currentLocation?.latitude || 35.0497094}
+    longitude={currentLocation?.longitude || 127.9929478}
+    level={3}
+    height="250px"
+    showCurrentLocation={true}
+    onMapLoad={(map) => console.log('홈 지도 로드:', map)}
+  />
+  
+  <MapInfo>
+    <LocationText>
+      {currentLocation?.address || '경상남도 사천시 광포길'}
+    </LocationText>
+    <TimeText>
+      {currentLocation?.timestamp 
+        ? format(new Date(currentLocation.timestamp), 'MM.dd. HH:mm 기준', { locale: ko })
+        : format(new Date(), 'MM.dd. HH:mm 기준', { locale: ko })}
+    </TimeText>
+  </MapInfo>
+  
+  <Divider />
+  
+  <LocationHistoryButton onClick={handleLocationHistoryClick}>
+    <RouteIconWrapper>
+      <img src="/./src/assets/route.png" alt="경로" />
+    </RouteIconWrapper>
+    <ButtonText>최근 이동경로 확인하기</ButtonText>
+    <ArrowIcon>›</ArrowIcon>
+  </LocationHistoryButton>
+</MapLocationCard>
 
         {/* 위급버튼 기록 카드 */}
         <EmergencyButtonCard>
@@ -298,35 +339,35 @@ const MapLocationCard = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
-const MapContainer = styled.div`
-  width: 100%;
-  height: 250px;
-  background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 50%, #b3e5fc 100%);
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+// const MapContainer = styled.div`
+//   width: 100%;
+//   height: 250px;
+//   background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 50%, #b3e5fc 100%);
+//   position: relative;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// `;
 
-const MapPlaceholder = styled.div`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
+// const MapPlaceholder = styled.div`
+//   position: relative;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+// `;
 
-const LocationPin = styled.div`
-  font-size: 32px;
-`;
+// const LocationPin = styled.div`
+//   font-size: 32px;
+// `;
 
-const LocationLabel = styled.div`
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 14px;
-  margin-top: 8px;
-`;
+// const LocationLabel = styled.div`
+//   background: rgba(0, 0, 0, 0.7);
+//   color: white;
+//   padding: 6px 12px;
+//   border-radius: 12px;
+//   font-size: 14px;
+//   margin-top: 8px;
+// `;
 
 const MapInfo = styled.div`
   display: flex;
