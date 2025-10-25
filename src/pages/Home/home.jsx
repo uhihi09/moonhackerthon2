@@ -124,7 +124,7 @@ const Home = () => {
     <Container>
       {/* 헤더 */}
       <Header>
-        <LogoImage src="../src/assets/symbol.svg" alt="핑!" onError={(e) => {
+        <LogoImage src="/assets/symbol.svg" alt="핑!" onError={(e) => {
           e.target.style.display = 'none';
           e.target.nextSibling.style.display = 'block';
         }} />
@@ -168,7 +168,7 @@ const Home = () => {
   
   <LocationHistoryButton onClick={handleLocationHistoryClick}>
     <RouteIconWrapper>
-      <img src="/./src/assets/route.png" alt="경로" />
+      <img src="/assets/route.png" alt="경로" />
     </RouteIconWrapper>
     <ButtonText>최근 이동경로 확인하기</ButtonText>
     <ArrowIcon>›</ArrowIcon>
@@ -188,7 +188,7 @@ const Home = () => {
                 <React.Fragment key={record.id}>
                   <EmergencyRecordItem onClick={() => handleEmergencyRecordClick(record.id)}>
                     <WarningIconWrapper>
-                      <img src="./src/assets/warning.png" alt="경고" />
+                      <img src="/assets/warning.png" alt="경고" />
                     </WarningIconWrapper>
                     <RecordDateTime>
                       {formatEmergencyDate(record.timestamp)}
@@ -213,7 +213,7 @@ const Home = () => {
               onClick={() => handleEmergencyCall('police')}
             >
               <EmergencyLogoWrapper>
-                <img src="./src/assets/112logo.png" alt="112" />
+                <img src="/assets/112logo.png" alt="112" />
               </EmergencyLogoWrapper>
               <EmergencyText>경찰관서에 신고하기</EmergencyText>
             </EmergencyButton>
@@ -222,7 +222,7 @@ const Home = () => {
               onClick={() => handleEmergencyCall('fire')}
             >
               <EmergencyLogoWrapper>
-                <img src="./src/assets/119logo.png" alt="119" />
+                <img src="assets/119logo.png" alt="119" />
               </EmergencyLogoWrapper>
               <EmergencyText>소방관서에 신고하기</EmergencyText>
             </EmergencyButton>
